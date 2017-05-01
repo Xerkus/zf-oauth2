@@ -1,26 +1,26 @@
 <?php
 if ($this->code) {
-    printf("<h2>The authentication code is %s</h2>", $this->code);
+    printf("<h2>The authentication code is %s</h2>", $this->escapeHtml($this->code));
     printf("<p>Use this code to request an access token.</p>");
     printf("For instance, using <a href=\"https://github.com/jkbr/httpie\">HTTPie</a>:</p> ");
     printf(
         "<p>http POST %s grant_type=authorization_code code=%s redirect_uri=%s client_id=testclient client_secret=testpass</p>",
         $this->serverUrl('/oauth'),
-        $this->code,
+        $this->escapeHtml($this->code),
         '/oauth/receivecode'
     );
     printf("<p>or using <a href=\"http://curl.haxx.se/docs/manpage.html\">CURL</a>:</p>");
     printf(
         "<p>curl -u testclient:testpass %s -d 'grant_type=authorization_code&code=%s&redirect_uri=%s'</p>",
         $this->serverUrl('/oauth'),
-        $this->code,
+        $this->escapeHtml($this->code),
         '/oauth/receivecode'
     );
     printf("<p>or</p>");
     printf(
         '<p>curl -H "Content-Type: application/json" -X POST -d \'{"redirect_uri":"%s","client_id":"testclient","client_secret":"testpass","code":"%s","grant_type":"authorization_code"}\' %s</p>',
         '/oauth/receivecode',
-        $this->code,
+        $this->escapeHtml($this->code),
         $this->serverUrl('/oauth')
     );
  } else {
@@ -48,7 +48,9 @@ if ($this->code) {
 
     // show the token parsed from the fragment, and show the next step
     var showAccessToken = function (e) {
-        document.getElementById('access_token').innerHTML = tokenParams.access_token;
+        var token = document.createTextNode(tokenParams.access_token);
+        document.getElementById('access_token').innerHTML = '';
+        document.getElementById('access_token').appendChild(token);
     }
 </script>
 <?php
